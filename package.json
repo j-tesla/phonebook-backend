@@ -1,0 +1,30 @@
+{
+  "name": "phonebook-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API to supply JSON data to phonebook webapp ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/j-tesla/phonebook-backend.git"
+  },
+  "keywords": [
+    "REST"
+  ],
+  "author": "Jayanth PSY",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/j-tesla/phonebook-backend/issues"
+  },
+  "homepage": "https://github.com/j-tesla/phonebook-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
