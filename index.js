@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         id: 1,
@@ -24,24 +26,58 @@ let persons = [
     }
 ]
 
-app.get('/api/persons', (request, response) => {
-    response.json(persons)
-})
-
+const generateId = () => {
+    return Math.round(Math.random() * 1000000000000000)
+}
 app.get('/info', (request, response) => {
     const info = `Phonebook has info for ${persons.length} people\n\n${new Date()}`
     response.send(info)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons', (req, res) => {
+    res.json(persons)
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    const id = generateId()
+
+    if (body.name && body.number) {
+        if (persons.map(p => p.name).includes(body.name)) {
+            res.status(400).json({
+                error: 'name must be unique'
+            })
+        } else {
+            const person = {
+                id,
+                name: body.name,
+                number: body.number
+            }
+            persons.push(person)
+            res.json(person)
+        }
+    } else {
+        res.status(400).json({
+            error: 'both name and number fields are necessary'
+        })
+    }
+})
+
+app.get('/api/persons/:id', (req, res) => {
     let id
-    id = Number(request.params.id)
+    id = Number(req.params.id)
     const person = persons.find(p => p.id === id)
 
     if (person)
-        response.json(person)
+        res.json(person)
     else
-        response.status(404).end()
+        res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    persons = persons.filter(p => p.id !== id)
+    res.status(204).end()
 })
 
 const PORT = 3001
