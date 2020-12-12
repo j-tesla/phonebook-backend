@@ -1,8 +1,9 @@
 # node modules
 node_modules/
 
+npm-debug.log
+
 # JetBrains IDE config files
 .idea/
 
-
-
+/*.env
