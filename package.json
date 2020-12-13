@@ -27,6 +27,7 @@
   "homepage": "https://github.com/j-tesla/phonebook-backend#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^5.11.7",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
