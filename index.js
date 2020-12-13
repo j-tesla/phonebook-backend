@@ -42,9 +42,10 @@ let persons = [
     }
 ]
 
-const generateId = () => {
-    return Math.round(Math.random() * 1000000000000000)
-}
+// const generateId = () => {
+//     return Math.round(Math.random() * 1000000000000000)
+// }
+
 app.get('/info', (request, response) => {
     const info = `Phonebook has info for ${persons.length} people\n\n${new Date()}`
     response.send(info)
@@ -52,31 +53,37 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons', (req, res) => {
     Person.find({}).then(people => {
-        res.json(people.map(person => person.toJSON()))
+            res.json(people.map(person => person.toJSON()))
         }
     )
 })
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    const id = generateId()
 
     if (body.name && body.number) {
-        if (persons.map(p => p.name).includes(body.name)) {
-            res.status(400).json({
-                error: 'name must be unique'
+        // if (persons.map(p => p.name).includes(body.name)) {
+        //     return res.status(400).json({
+        //         error: 'name must be unique'
+        //     })
+        // }
+        const person = new Person({
+            name: body.name,
+            number: body.number
+        })
+        person.save()
+            .then(savedPerson => {
+                return res.json(savedPerson.toJSON())
             })
-        } else {
-            const person = {
-                id,
-                name: body.name,
-                number: body.number
-            }
-            persons.push(person)
-            res.json(person)
-        }
+            .catch(error => {
+                console.log('failed to save new entry to mongoDB', error.message)
+                return res.status(502).json({
+                    error: 'failed to save new entry to database'
+                })
+            })
+
     } else {
-        res.status(400).json({
+        return res.status(400).json({
             error: 'both name and number fields are necessary'
         })
     }
