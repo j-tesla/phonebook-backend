@@ -8,7 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && . ./dir.env && cd $FRONT_DIR && npm run build --prod && cp -r build $BACK_DIR/ && cd $BACK_DIR",
-    "deploy": "git push heroku main",
+    "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git commit -a -m uibuild ; npm run deploy",
     "logs:prod": "heroku logs -t"
   },
