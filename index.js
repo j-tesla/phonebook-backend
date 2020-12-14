@@ -39,22 +39,15 @@ app.get('/api/persons', (req, res, next) => {
 app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
-    if (body.name && body.number) {
-        const person = new Person({
-            name: body.name,
-            number: body.number
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
+    person.save()
+        .then(savedPerson => {
+            return res.json(savedPerson.toJSON())
         })
-        person.save()
-            .then(savedPerson => {
-                return res.json(savedPerson.toJSON())
-            })
-            .catch(error => next(error))
-
-    } else {
-        return res.status(400).json({
-            error: 'both name and number fields are necessary'
-        })
-    }
+        .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
@@ -81,40 +74,36 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.put('/api/persons/:id', (req, res, next) => {
     const body = req.body
 
-    if (body.name && body.number) {
-        const updatedPerson = {
-            name: body.name,
-            number: body.number
-        }
-        Person.findByIdAndUpdate(req.params.id, updatedPerson, {new: true})
-            .then(person => {
-                if (person)
-                    res.json(person.toJSON())
-                else
-                    return res.status(404).send({error: 'requested resource not found'})
-            })
-            .catch(error => next(error))
-    } else {
-        return res.status(400).json({
-            error: 'both name and number fields are necessary'
-        })
+    const updatedPerson = {
+        name: body.name,
+        number: body.number
     }
+    Person.findByIdAndUpdate(req.params.id, updatedPerson, {new: true})
+        .then(person => {
+            if (person)
+                res.json(person.toJSON())
+            else
+                return res.status(404).send({error: 'requested resource not found'})
+        })
+        .catch(error => next(error))
 })
 
-// TODO middleware for error handling and unidentified requests
-const unknownEndpoint = (req, res) => {
+// unknown endpoint handler
+app.use((req, res) => {
     res.status(404).send({error: 'unknown endpoint'})
-}
-
-app.use(unknownEndpoint)
+})
 
 const errorHandler = (error, req, res, next) => {
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return res.status(400).send({error: 'malformatted id'})
     }
 
+    if (error.name === 'ValidationError') {
+        return res.status(400).send({error: error.message})
+    }
+
     console.log(error)
-    return res.status(500).send({error: `${error.name}: ${error.message}`})
+    return res.status(500).send({error: error.message})
 }
 
 app.use(errorHandler)
