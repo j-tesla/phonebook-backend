@@ -24,12 +24,14 @@ if (url === undefined) {
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        minlength: [3, 'should be at least 3 characters long'],
+        required: [true, 'field is mandatory'],
+        unique: [true, 'should be unique']
     },
     number: {
         type: String,
-        required: true
+        minlength: [8, 'should be at least 8 digits long'],
+        required: [true, 'field is mandatory']
     }
 })
 personSchema.plugin(uniqueValidator)
