@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && . ./dir.env && cd $FRONT_DIR && npm run build --prod && cp -r build $BACK_DIR/ && cd $BACK_DIR",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git commit -a -m uibuild ; npm run deploy",
-    "logs:prod": "heroku logs -t"
+    "logs:prod": "heroku logs -t",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.6"
   },
   "engines": {
